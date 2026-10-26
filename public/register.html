@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription — GoldShop Leaks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-logo">
+    <span class="bolt">⚡</span>
+    GoldShop<span style="color:var(--text-muted);font-weight:400">Leaks</span>
+  </a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">🏠 Accueil</a>
+  </div>
+  <div class="nav-right">
+    <a href="/login" class="btn btn-outline btn-sm">→ Se connecter</a>
+  </div>
+</nav>
+
+<div class="auth-layout">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">⚡</div>
+      <h2>Créer un compte</h2>
+      <p>Rejoins la communauté GoldShop Leaks</p>
+    </div>
+
+    <div class="alert alert-error" id="err"></div>
+    <div class="alert alert-success" id="ok"></div>
+
+    <form id="regForm">
+      <div class="form-group">
+        <label class="form-label">Pseudo</label>
+        <input type="text" class="form-input" id="username" placeholder="ton_pseudo" required minlength="3" maxlength="20" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="email" placeholder="toi@exemple.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="pwd" placeholder="6 caractères minimum" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <input type="password" class="form-input" id="pwd2" placeholder="••••••••" required autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:6px" id="submitBtn">
+        Créer mon compte →
+      </button>
+    </form>
+
+    <div style="display:flex;align-items:center;gap:10px;margin:16px 0">
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <span style="font-size:.75rem;color:var(--text-muted)">ou</span>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+    </div>
+
+    <a href="/auth/discord" class="discord-oauth-btn">
+      <svg width="20" height="20" viewBox="0 0 71 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60.1045 4.8978C55.5792 2.8214 50.7265 1.2916 45.6527 0.41542C45.5603 0.39851 45.468 0.44077 45.4204 0.52529C44.7963 1.6353 44.105 3.0834 43.6209 4.2216C38.1637 3.4046 32.7345 3.4046 27.3892 4.2216C26.905 3.0581 26.1886 1.6353 25.5617 0.52529C25.5141 0.44359 25.4218 0.40133 25.3294 0.41542C20.2584 1.2888 15.4057 2.8186 10.8776 4.8978C10.8384 4.9147 10.8048 4.9429 10.7825 4.9795C1.57795 18.7309 -0.943561 32.1443 0.293408 45.3914C0.299005 45.4562 0.335386 45.5182 0.385761 45.5576C7.41961 50.7065 14.2196 53.9852 20.8895 56.1733C20.9819 56.2028 21.0799 56.1705 21.1387 56.0941C22.6961 53.9852 24.0921 51.7564 25.2886 49.4076C25.3502 49.286 25.2914 49.1419 25.1626 49.0929C23.0045 48.2591 20.9455 47.2468 18.9629 46.0955C18.8197 46.0125 18.8085 45.8100 18.9405 45.7130C19.3573 45.4077 19.7741 45.0898 20.1741 44.7691C20.2388 44.7156 20.3283 44.7044 20.4038 44.7382C32.0932 50.0999 44.7241 50.0999 56.2727 44.7382C56.3483 44.7016 56.4378 44.7128 56.5053 44.7663C56.9053 45.087 57.3221 45.4077 57.7417 45.7130C57.8737 45.8100 57.8654 46.0125 57.7222 46.0955C55.7396 47.2665 53.6806 48.2591 51.5197 49.0901C51.3909 49.1391 51.335 49.286 51.3966 49.4076C52.6175 51.7536 54.0135 53.9824 55.5429 56.0913C55.5989 56.1705 55.6997 56.2028 55.7921 56.1733C62.4955 53.9852 69.2955 50.7065 76.3293 45.5576C76.3825 45.5182 76.416 45.459 76.4216 45.3942C77.9368 30.1074 73.9015 16.8013 65.5045 4.9823C65.4850 4.9429 65.4514 4.9147 65.4095 4.8978H60.1045Z" fill="white"/>
+      </svg>
+      S'inscrire avec Discord
+    </a>
+
+    <div class="auth-footer">
+      Déjà un compte ? <a href="/login">Se connecter</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('regForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = document.getElementById('err');
+  const ok  = document.getElementById('ok');
+  err.style.display = 'none';
+  ok.style.display  = 'none';
+
+  const pwd  = document.getElementById('pwd').value;
+  const pwd2 = document.getElementById('pwd2').value;
+  if (pwd !== pwd2) {
+    err.style.display = 'block';
+    err.textContent = '❌ Les mots de passe ne correspondent pas.';
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Création...';
+  btn.disabled = true;
+
+  const res  = await fetch('/api/register', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      username: document.getElementById('username').value,
+      email:    document.getElementById('email').value,
+      password: pwd
+    })
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    ok.style.display = 'block';
+    ok.textContent = '✅ Compte créé ! Redirection...';
+    setTimeout(() => window.location.href = '/', 800);
+  } else {
+    err.style.display = 'block';
+    err.textContent = '❌ ' + data.error;
+    btn.textContent = 'Créer mon compte →';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

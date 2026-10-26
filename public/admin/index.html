@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin — GoldShop Leaks</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">💰 GoldShop <span style="color:var(--text-muted);font-size:.75rem;font-weight:400">ADMIN</span></div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Principal</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="nav('dashboard')" class="active" data-page="dashboard">📊 Dashboard</a></li>
+      <li><a href="#" onclick="nav('leaks')" data-page="leaks">📦 Leaks</a></li>
+      <li><a href="#" onclick="nav('categories')" data-page="categories">🗂️ Catégories</a></li>
+      <li><a href="#" onclick="nav('slides')" data-page="slides">📢 Pubs / Slides</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Communauté</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="nav('users')" data-page="users">👥 Utilisateurs</a></li>
+      <li><a href="#" onclick="nav('bans')" data-page="bans">🔨 Bans</a></li>
+      <li><a href="#" onclick="nav('logs')" data-page="logs">📋 Logs</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Paramètres</div>
+    <ul class="sidebar-nav">
+      <li><a href="#" onclick="nav('settings')" data-page="settings">⚙️ Paramètres</a></li>
+      <li><a href="/" target="_blank">🌐 Voir le site</a></li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <ul class="sidebar-nav">
+      <li><button onclick="logout()">🚪 Déconnexion</button></li>
+    </ul>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════ -->
+<main class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbarTitle">Dashboard</span>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:.8rem;color:var(--text-muted)" id="adminName"></span>
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dark));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#000" id="adminAvatar">A</div>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ─── DASHBOARD ─── -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-grid" id="statsGrid">
+        <div class="loader-center" style="grid-column:1/-1"><div class="spinner"></div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h3>📋 Activité récente</h3></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Type</th><th>Données</th><th>Date</th></tr></thead>
+            <tbody id="logsTableBody"><tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── LEAKS ─── -->
+    <div id="page-leaks" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>📦 Gestion des Leaks</h3>
+          <div class="search-row">
+            <button class="btn btn-gold" onclick="openLeakModal()">+ Nouveau leak</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Titre</th><th>Catégorie</th><th>Téléchargements</th>
+                <th>Statut</th><th>Date</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leaksTableBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CATÉGORIES ─── -->
+    <div id="page-categories" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>🗂️ Gestion des Catégories</h3>
+          <button class="btn btn-gold" onclick="openCatModal()">+ Nouvelle catégorie</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Icône</th><th>Nom</th><th>Description</th><th>Position</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="catsTableBody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── UTILISATEURS ─── -->
+    <div id="page-users" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>👥 Utilisateurs inscrits</h3>
+          <div class="search-row">
+            <input type="text" class="search-field" id="userSearch" placeholder="🔍 Pseudo, email, IP..." oninput="searchUsers()">
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Utilisateur</th><th>Email</th><th>IP</th><th>Inscription</th><th>Dernière connexion</th><th>Rôle</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── BANS ─── -->
+    <div id="page-bans" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>🔨 Liste des Bans</h3>
+          <button class="btn btn-danger" onclick="openBanModal()">+ Bannir une IP</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Utilisateur</th><th>IP bannie</th><th>Raison</th><th>Banni le</th><th>Action</th></tr>
+            </thead>
+            <tbody id="bansTableBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── LOGS ─── -->
+    <div id="page-logs" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>📋 Logs d'activité</h3>
+          <button class="btn btn-outline btn-sm" onclick="loadLogs()">🔄 Actualiser</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Données</th><th>Date</th></tr>
+            </thead>
+            <tbody id="logsFullBody">
+              <tr><td colspan="3" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PUBS / SLIDES ─── -->
+    <div id="page-slides" class="page">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>📢 Pubs / Slides sponsorisés</h3>
+          <button class="btn btn-gold" onclick="openSlideModal()">+ Nouvelle pub</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Image</th><th>Titre</th><th>Sous-titre</th><th>Boutons</th><th>Statut</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="slidesTableBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:24px">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── PARAMÈTRES ─── -->
+    <div id="page-settings" class="page">
+
+      <div class="panel-card">
+        <h3>🖼️ Bannière du Hero</h3>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+          Image de fond affichée derrière le titre de la page d'accueil.
+        </p>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Uploader une image</label>
+          <input type="file" class="form-input" id="bannerFile" accept="image/*">
+          <span class="form-hint">JPG, PNG — recommandé 1920×500px</span>
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Ou coller un lien URL</label>
+          <input type="url" class="form-input" id="bannerUrl" placeholder="https://...">
+        </div>
+        <div id="bannerPreview" style="margin-bottom:12px;display:none">
+          <img id="bannerPreviewImg" style="width:100%;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--border)">
+        </div>
+        <button class="btn btn-gold" onclick="saveBanner()">💾 Sauvegarder</button>
+      </div>
+
+      <div class="panel-card">
+        <h3>🔔 Webhook Discord</h3>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+          Reçois une notification Discord à chaque connexion, inscription et ban sur ton site.
+        </p>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">URL du Webhook Discord</label>
+          <input type="url" class="form-input" id="webhookUrl" placeholder="https://discord.com/api/webhooks/...">
+        </div>
+        <button class="btn btn-gold" onclick="saveWebhook()">💾 Sauvegarder</button>
+        <button class="btn btn-outline" style="margin-left:8px" onclick="testWebhook()">🧪 Tester</button>
+      </div>
+
+      <div class="panel-card">
+        <h3>💬 Lien Discord (bouton sur le site)</h3>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+          Le lien qui s'ouvre quand quelqu'un clique sur "Rejoindre le Discord" dans le hero.
+        </p>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Lien d'invitation Discord</label>
+          <input type="url" class="form-input" id="discordInviteUrl" placeholder="https://discord.gg/ton-invite">
+        </div>
+        <button class="btn btn-gold" onclick="saveDiscordInvite()">💾 Sauvegarder</button>
+      </div>
+
+      <div class="panel-card">
+        <h3>📊 Statistiques Discord — Bloc "EN BREF"</h3>
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:16px">
+          Les chiffres affichés dans le bloc "EN BREF" à droite du site.
+        </p>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="form-group">
+            <label class="form-label">👥 Membres Discord</label>
+            <input type="number" class="form-input" id="discordMembers" placeholder="12082" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🟢 En ligne sur Discord</label>
+            <input type="number" class="form-input" id="discordOnline" placeholder="2497" min="0">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="saveDiscordStats()">💾 Sauvegarder</button>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</main>
+
+<!-- ════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- Modal Leak -->
+<div class="modal-overlay" id="leakModal">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-head">
+      <h3 id="leakModalTitle">Nouveau Leak</h3>
+      <button class="modal-close" onclick="closeModal('leakModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="leakForm" enctype="multipart/form-data">
+        <input type="hidden" id="leakId">
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Titre *</label>
+            <input type="text" class="form-input" id="leakTitle" placeholder="Nom du leak" required>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="leakDesc" placeholder="Description détaillée..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Catégorie *</label>
+            <select class="form-select" id="leakCategory" required>
+              <option value="">Choisir...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (séparés par virgule)</label>
+            <input type="text" class="form-input" id="leakTags" placeholder="FiveM, Gratuit, V3...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lien externe (WinRAR, Mediafire...)</label>
+            <input type="url" class="form-input" id="leakLink" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vidéo YouTube ou lien direct</label>
+            <input type="url" class="form-input" id="leakVideo" placeholder="https://youtube.com/...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Image de prévisualisation</label>
+            <input type="file" class="form-input" id="leakThumb" accept="image/*">
+            <span class="form-hint">JPG, PNG, GIF — max 10 MB</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fichier à uploader (optionnel)</label>
+            <input type="file" class="form-input" id="leakFile" accept=".rar,.zip,.7z">
+            <span class="form-hint">RAR, ZIP, 7Z — max 500 MB</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Statut</label>
+            <select class="form-select" id="leakPublished">
+              <option value="true">✅ Publié</option>
+              <option value="false">📝 Brouillon</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button type="button" class="btn btn-outline" onclick="closeModal('leakModal')">Annuler</button>
+          <button type="submit" class="btn btn-gold" id="leakSubmitBtn">💾 Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Catégorie -->
+<div class="modal-overlay" id="catModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="catModalTitle">Nouvelle Catégorie</h3>
+      <button class="modal-close" onclick="closeModal('catModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="catForm">
+        <input type="hidden" id="catId">
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Nom *</label>
+          <input type="text" class="form-input" id="catName" placeholder="Scripts FiveM" required>
+        </div>
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-input" id="catDesc" placeholder="Courte description">
+        </div>
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="form-group">
+            <label class="form-label">Icône (emoji ou URL image)</label>
+            <input type="text" class="form-input" id="catIcon" placeholder="⚙️">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Couleur</label>
+            <input type="color" class="form-input" id="catColor" value="#ffd700" style="height:40px;padding:4px">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Position (ordre d'affichage)</label>
+            <input type="number" class="form-input" id="catPosition" placeholder="1" min="0">
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button type="button" class="btn btn-outline" onclick="closeModal('catModal')">Annuler</button>
+          <button type="submit" class="btn btn-gold">💾 Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ban -->
+<div class="modal-overlay" id="banModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>🔨 Bannir</h3>
+      <button class="modal-close" onclick="closeModal('banModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="form-label">IP à bannir (optionnel si user sélectionné)</label>
+        <input type="text" class="form-input" id="banIp" placeholder="192.168.1.1">
+      </div>
+      <div class="form-group" style="margin-bottom:12px">
+        <label class="form-label">Raison</label>
+        <input type="text" class="form-input" id="banReason" placeholder="Raison du ban...">
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-outline" onclick="closeModal('banModal')">Annuler</button>
+        <button class="btn btn-danger" onclick="submitBan()">🔨 Bannir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal User Detail -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>👤 Détail utilisateur</h3>
+      <button class="modal-close" onclick="closeModal('userModal')">✕</button>
+    </div>
+    <div class="modal-body" id="userModalBody">
+      <div class="loader-center"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Slide/Pub -->
+<div class="modal-overlay" id="slideModal">
+  <div class="modal-box modal-box-lg">
+    <div class="modal-head">
+      <h3 id="slideModalTitle">Nouvelle Pub</h3>
+      <button class="modal-close" onclick="closeModal('slideModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="slideForm" enctype="multipart/form-data">
+        <input type="hidden" id="slideId">
+        <div class="form-grid" style="margin-bottom:14px">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Titre principal *</label>
+            <input type="text" class="form-input" id="slideTitle" placeholder="LA BASE S4 EST DISPONIBLE !" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sous-titre / Nom sponsor</label>
+            <input type="text" class="form-input" id="slideSubtitle" placeholder="S4 BASE">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Position (ordre d'affichage)</label>
+            <input type="number" class="form-input" id="slidePosition" placeholder="0" min="0">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="slideDesc" placeholder="Description courte de la pub..."></textarea>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Image de fond</label>
+            <input type="file" class="form-input" id="slideImg" accept="image/*">
+            <span class="form-hint">JPG, PNG, GIF — recommandé 1600×400px</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bouton 1 — Texte</label>
+            <input type="text" class="form-input" id="slideBtn1Label" placeholder="Acheter →">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bouton 1 — Lien</label>
+            <input type="url" class="form-input" id="slideBtn1Url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bouton 2 — Texte</label>
+            <input type="text" class="form-input" id="slideBtn2Label" placeholder="Voir le détail">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bouton 2 — Lien</label>
+            <input type="url" class="form-input" id="slideBtn2Url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Statut</label>
+            <select class="form-select" id="slideActive">
+              <option value="true">✅ Actif (visible)</option>
+              <option value="false">🚫 Désactivé</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button type="button" class="btn btn-outline" onclick="closeModal('slideModal')">Annuler</button>
+          <button type="submit" class="btn btn-gold" id="slideSubmitBtn">💾 Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
